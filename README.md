@@ -12,6 +12,34 @@ An efficient, browser-based inventory management tool built with Flask and SQLit
 - Label drawers with **QR codes** and custom codes
 - Ready for deployment on Raspberry Pi, Docker, or cloud services
 
+## Program Structure
+
+```
+inventorywebapp/
+|---> app/
+|      |---> static/
+|      |      |---> style.css
+|      |---> templates/
+|      |      |---> index.html
+|      |---> __init__.py
+|      |---> api_routes.py
+|      |---> app.py
+|      |---> export_manager.py
+|      |---> import_manager.py
+|      |---> inventory_manager.py
+|      |---> Logger.py
+|      |---> system_stats.py
+|      |---> utilities.py
+|---> resources/
+|      |---> backup.csv
+|      |---> database.db
+|      |---> inventory.log
+|---> clean_run.py
+|---> README.md
+|---> requirements.txt
+|---> reset_database.py
+```
+
 ## Tech Stack
 
 - **Backend**: Python, Flask
