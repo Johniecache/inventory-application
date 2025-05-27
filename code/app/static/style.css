@@ -1,0 +1,208 @@
+body {
+    font-family: sans-serif;
+    margin: 10px;
+    background-color: #030303;
+    color: #f0f0f0;
+}
+
+/* Drawers Grid */
+.grid, .large-grid {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 24px; /* vertical spacing between drawer groups */
+}
+
+.grid {
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+}
+
+.large-grid {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+}
+
+/* Drawers */
+.drawer {
+    padding: 10px;
+    /* Updated background for a lighter interior */
+    background: radial-gradient(circle at 50% 0, #4a4a4a 0%, #2a2a2a 100%); /* Lighter dark gradient */
+    /* Gold border for the 'edging' */
+    border: 3px solid #C0A144; /* A slightly less vibrant gold */
+    /* Box shadows adjusted for a more subtle golden glow */
+    box-shadow:
+        0 0 10px rgba(192, 161, 68, 0.25), /* Outer glow, reduced opacity */
+        inset 0 0 8px rgba(192, 161, 68, 0.1), /* Inner highlight, reduced opacity */
+        inset 0 0 15px rgba(192, 161, 68, 0.05); /* Deeper inner glow, reduced opacity */
+    color: #f0f0f0; /* Keeping text light for good contrast */
+    outline: none;
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+    text-align: center;
+    white-space: pre-line;
+    user-select: none;
+    border-radius: 8px;
+}
+
+.drawer:hover {
+    /* Slightly lighter background on hover */
+    background: radial-gradient(circle at 50% 0, #5a5a5a 0%, #3a3a3a 100%);
+    transform: translateY(-2px);
+    cursor: pointer;
+    /* Stronger, but still toned-down, golden glow on hover */
+    box-shadow:
+        0 0 15px rgba(192, 161, 68, 0.4),
+        inset 0 0 10px rgba(192, 161, 68, 0.15),
+        inset 0 0 20px rgba(192, 161, 68, 0.08);
+}
+
+/* Top Buttons */
+.top-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+}
+
+.top-buttons form {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    gap: 5px;
+}
+
+.left-group {
+    display: flex;
+    gap: 10px;
+}
+
+.right-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.export-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+
+.search-container {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.search-container input {
+    min-width: 200px;
+}
+
+button {
+    padding: 8px 12px;
+    background-color: #444;
+    color: #fff;
+    border: 1px solid #888;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #555;
+}
+
+/* Search Field */
+input[type="text"] {
+    padding: 6px;
+    border-radius: 4px;
+    border: 1px solid #777;
+    background-color: #1e1e1e;
+    color: #eee;
+}
+
+/* Select element styling */
+select {
+    padding: 6px;
+    border-radius: 4px;
+    border: 1px solid #777;
+    background-color: #1e1e1e;
+    color: #eee;
+}
+
+
+/* Bulk Update Box */
+textarea {
+    background-color: #1e1e1e;
+    color: #f0f0f0;
+    border: 1px solid #c0c0c0;
+    border-radius: 6px;
+    padding: 8px;
+}
+
+/* Mobile Tweaks */
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .large-grid {
+        grid-template-columns: 1fr;
+        margin-bottom: 24px;
+    }
+
+    .drawer {
+        padding: 6px;
+        font-size: 12px;
+    }
+
+    .top-buttons {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+        padding: 5px;
+    }
+
+    .left-group, .right-group, .search-container {
+        flex-direction: column;
+        width: 100%;
+        gap: 5px;
+        align-items: stretch;
+    }
+
+    .search-container form {
+        width: 100%;
+        display: flex;
+    }
+
+    .search-container input {
+        width: 100%;
+        min-width: unset;
+    }
+    
+    .search-container button {
+        flex-shrink: 0;
+    }
+
+    button {
+        width: 100%;
+        margin: 0;
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .top-buttons form {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+
+    .top-buttons form label,
+    .top-buttons form select,
+    .export-container label,
+    .export-container select,
+    .export-container button {
+        flex-grow: 1;
+    }
+}

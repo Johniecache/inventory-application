@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inventory</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <div class="top-buttons">
+        <div class="left-group">
+            <form method="post" action="/clear" onsubmit="return confirm('Are you sure? This will delete all drawer data!');">
+                <button type="submit">Clear All</button>
+            </form>
+            <button onclick="fetch('/undo', { method: 'POST' }).then(() => location.reload());">Undo</button>
+            <button onclick="fetch('/redo', { method: 'POST' }).then(() => location.reload());">Redo</button>
+        </div>
+
+        <div class="search-container">
+            <form action="/search" method="get">
+                <input type="hidden" name="cabinet" value="{{ cabinet }}"> <input type="text" name="q" placeholder="Search drawers..." value="{{ query if query else '' }}">
+                <button type="submit">Search</button>
+            </form>
+        </div>
+
+        <div class="right-group">
+            <form method="get" action="/">
+                <label for="cabinet">Select Cabinet:</label>
+                <select name="cabinet" onchange="this.form.submit()">
+                    {% for c in ['Default', 'Tools', 'Electronics', 'SpareParts'] %}
+                    <option value="{{ c }}" {% if cabinet == c %}selected{% endif %}>{{ c }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+            <div class="export-container">
+                <label for="export-format">Export As:</label>
+                <select id="export-format" name="export-format">
+                    <option value="csv">CSV (.csv)</option>
+                    <option value="excel">Excel (.xlsx)</option>
+                    <option value="json">JSON (.json)</option>
+                    <option value="txt">TXT (.txt)</option>
+                    <option value="sheets">Google Sheets (.gsheet)</option>
+                </select>
+                <button onclick="handleExport()">Export</button>
+            </div>
+            {# NEW IMPORT SECTION BELOW #}
+            <div class="import-container">
+                <label for="import-format">Import From:</label>
+                <select id="import-format" name="import-format">
+                    <option value="csv">CSV (.csv)</option>
+                    <option value="excel">Excel (.xlsx)</option>
+                    <option value="json">JSON (.json)</option>
+                    <option value="txt">TXT (.txt)</option>
+                </select>
+                <input type="file" id="import-file" style="display: none;" onchange="handleFileSelect(this.files[0])">
+                <button onclick="document.getElementById('import-file').click()">Import</button>
+            </div>
+        </div>
+    </div>
+
+    {% for row in ['A', 'B', 'C', 'D'] %}
+    <div class="grid">
+        {% for col in range(1, 10) %}
+        {% set key = row ~ col %}
+        {% if key in inventory %}
+            {% set drawer = inventory[key] %}
+            <div class="drawer" data-id="{{ key }}">
+            <div class="drawer-id">{{ key }}</div>
+            <div class="drawer-name">{{ drawer.name or '' }}</div>
+            <div class="drawer-qty">({{ drawer.qty }})</div>
+            </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+    {% endfor %}
+
+
+    {% for row in ['E', 'F', 'G'] %}
+    <div class="large-grid">
+        {% for col in range(1, 5) %}
+        {% set key = row ~ col %}
+        {% if key in inventory %}
+            {% set drawer = inventory[key] %}
+            <div class="drawer large" data-id="{{ key }}">
+            <div class="drawer-id">{{ key }}</div>
+            <div class="drawer-name">{{ drawer.name or '' }}</div>
+            <div class="drawer-qty">({{ drawer.qty }})</div>
+            </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+    {% endfor %}
+
+<script>
+const CABINET_KEY = "{{ cabinet }}";
+
+document.querySelectorAll('.drawer').forEach(div => {
+    let touchstartX = 0, touchendX = 0;
+
+    div.addEventListener('click', async () => {
+        const drawerId = div.getAttribute('data-id');
+        const currentName = div.querySelector('.drawer-name').innerText.trim();
+        const currentQtyText = div.querySelector('.drawer-qty').innerText.trim();
+        const currentQty = currentQtyText.replace(/[()]/g, '') || '0';
+
+        let name = prompt(`Enter name for drawer ${drawerId}:`, currentName);
+        if (name === null) return;
+
+        let qtyStr = prompt(`Enter quantity for drawer ${drawerId}:`, currentQty);
+        if (qtyStr === null) return;
+
+        const qty = parseInt(qtyStr, 10);
+        if (isNaN(qty) || qty < 0) {
+            alert('Quantity must be a non-negative integer.');
+            return;
+        }
+
+        try {
+            const response = await fetch('/update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id: drawerId,
+                    name: name.trim(),
+                    qty: qty,
+                    cabinet: CABINET_KEY
+                })
+            });
+            const result = await response.json();
+            if (result.success) {
+                div.querySelector('.drawer-name').innerText = name.trim();
+                div.querySelector('.drawer-qty').innerText = `(${qty})`;
+                console.log(`Drawer ${drawerId} updated successfully in cabinet: ${CABINET_KEY}`);
+            } else {
+                alert('Server failed to update drawer: ' + (result.error || 'Unknown error.'));
+            }
+        } catch (e) {
+            alert('Network error updating drawer.');
+            console.error(e);
+        }
+    });
+});
+
+
+function exportToGoogleSheets() {
+    fetch('/export/sheets').then(res => {
+        if (res.status === 501) {
+            alert("Google Sheets export is not implemented yet.");
+        } else {
+            alert("Exported to Google Sheets.");
+        }
+    });
+}
+
+async function fetchPiStats() {
+    try {
+        const res = await fetch('/api/pi-stats');
+        if (!res.ok) throw new Error('Failed to fetch Pi stats');
+        const data = await res.json();
+        const statsDiv = document.getElementById('pi-stats');
+
+        statsDiv.innerHTML = `
+            <h3>Raspberry Pi 4 Stats</h3>
+            <ul>
+                <li>CPU Temp: ${data.cpu_temp} °C</li>
+                <li>CPU Usage: ${data.cpu_usage}%</li>
+                <li>Memory Usage: ${data.mem_used} MB / ${data.mem_total} MB</li>
+                <li>Disk Free: ${data.disk_free} GB</li>
+                <li>Uptime: ${data.uptime}</li>
+                <li>IP Address: ${data.ip_address}</li>
+            </ul>
+        `;
+    } catch (e) {
+        document.getElementById('pi-stats').innerHTML = `<p style="color:red;">Error loading Pi stats</p>`;
+        console.error(e);
+    }
+}
+
+fetchPiStats();
+setInterval(fetchPiStats, 10000);
+
+function handleExport() {
+    const format = document.getElementById('export-format').value;
+    const cabinet = CABINET_KEY;
+
+    if (format === 'sheets') {
+        fetch('/export/sheets').then(res => {
+            if (res.status === 501) {
+                alert("Google Sheets export is not implemented yet.");
+            } else {
+                alert("Exported to Google Sheets.");
+            }
+        });
+    } else {
+        window.location.href = `/export/${format}?cabinet=${encodeURIComponent(cabinet)}`;
+    }
+}
+
+async function handleFileSelect(file) {
+    if (!file) {
+        return;
+    }
+
+    const format = document.getElementById('import-format').value;
+    const cabinet = CABINET_KEY;
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+        const response = await fetch(`/import/${format}?cabinet=${encodeURIComponent(cabinet)}`, {
+            method: 'POST',
+            body: formData
+        });
+        const result = await response.json();
+
+        if (result.success) {
+            alert(`Successfully imported ${format} to cabinet ${cabinet}.`);
+            location.reload(); 
+        } else {
+            alert(`Failed to import ${format}: ${result.error || 'Unknown error.'}`);
+        }
+    } catch (e) {
+        alert('Network error during import.');
+        console.error(e);
+    }
+}
+</script>
+    <form method="post" action="/bulk_update?cabinet={{ cabinet }}" style="margin-top: 10px;">
+        <textarea name="bulk_input" rows="10" cols="50" placeholder="Enter drawer updates here... (A1, 0 -> clears A1)"></textarea><br>
+        <button type="submit">Apply Bulk Update</button>
+    </form>
+    <section id="pi-stats" style="margin-top: 30px; padding: 10px; border-top: 2px solid #ccc; font-size: 14px; font-family: monospace;">
+        <h3>Raspberry Pi 4 Stats</h3>
+        <div>Loading stats...</div>
+    </section>
+</body>
+</html>
