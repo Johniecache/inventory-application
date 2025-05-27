@@ -12,17 +12,17 @@ An efficient, browser-based inventory management tool built with Flask and SQLit
 - Label drawers with **QR codes** and custom codes
 - Ready for deployment on Raspberry Pi, Docker, or cloud services
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Backend**: Python, Flask
 - **Frontend**: HTML, CSS (Bootstrap), JavaScript
 - **Database**: SQLite
 - **Platform Ready**: Raspberry Pi, Docker, Heroku
 
-## 📷 Screenshots
+## Screenshots
 add screen shots later
 
-## ⚙️ Setup Instructions
+## Setup Instructions
 
 ### Prerequisites
 
