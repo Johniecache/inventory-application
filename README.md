@@ -48,7 +48,12 @@ inventorywebapp/
 - **Platform Ready**: Raspberry Pi, Docker, Heroku
 
 ## Screenshots
-add screen shots later
+![inventory_app_ss1](https://github.com/user-attachments/assets/781801f2-3968-4930-8527-aff73c715ae6)
+![inventory_app_ss2](https://github.com/user-attachments/assets/111d6ff0-ed24-4f5a-9ec3-eb9a14e21f29)
+![inventory_app_ss3](https://github.com/user-attachments/assets/a083ff93-e715-4c37-a232-6aeffd692eea)
+![inventory_app_ss4](https://github.com/user-attachments/assets/ebc37eb1-d121-4e5b-8e7e-dee0a4344778)
+![inventory_app_ss5](https://github.com/user-attachments/assets/a9a29fd1-53fb-4e4e-adc3-8750f935af12)
+
 
 ## Setup Instructions
 
