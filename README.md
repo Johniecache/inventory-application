@@ -53,8 +53,8 @@ inventorywebapp/
 ![inventory_app_ss3](https://github.com/user-attachments/assets/a083ff93-e715-4c37-a232-6aeffd692eea)
 ![inventory_app_ss4](https://github.com/user-attachments/assets/ebc37eb1-d121-4e5b-8e7e-dee0a4344778)
 
-Youtube Demo: https://youtu.be/go35cR_kcQA
-
+### Youtube Demo
+[![Inventory Application Demo](https://www.youtube.com/watch?v=go35cR_kcQA&ab_channel=Johniecache)](https://www.youtube.com/watch?v=go35cR_kcQA&ab_channel=Johniecache)
 
 
 ## Setup Instructions
